@@ -1,13 +1,8 @@
 {% extends 'base.html' %}
-{% load staticfiles %}
 {% load crispy_forms_tags %}
 
 {% block head %}
-
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/locale/tr.js"></script>
-    <script type="text/javascript" src="{% static "datepicker/js/bootstrap-datetimepicker.min.js" %}"></script>
-    <link href="{% static "datepicker/css/bootstrap-datetimepicker.min.css" %}" rel="stylesheet">
+    {% include 'custom-widgets/date-widget-assets.html' %}
 
     <script type="text/javascript">
         $( document ).ready(function() {
