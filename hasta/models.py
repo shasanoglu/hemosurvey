@@ -2,6 +2,9 @@ from django.db import models
 from home.models import Merkez
 
 class Hasta(models.Model):
+    def __str__(self):
+        return str(self.tckn)
+
     merkez = models.ForeignKey(Merkez)
     created_at = models.DateField(auto_now_add=True,editable=False,verbose_name="oluşturulma tarihi")
     modified_at = models.DateField(auto_now=True,editable=False,verbose_name="değiştirilme tarihi")
@@ -22,3 +25,7 @@ class KateterOlayi(models.Model):
     modified_at = models.DateField(auto_now=True,editable=False,verbose_name="değiştirilme tarihi")
     takilma_tarihi = models.DateField(verbose_name="takılma tarihi",)
     tip = models.CharField(max_length=10,choices=TIP_CHOICES)
+
+    class Meta:
+        verbose_name_plural = "kateter olayları"
+        verbose_name = "kateter olayı"
