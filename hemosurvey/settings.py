@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'localflavor', #local flavors such as tckno field
     'widget_tweaks', #to tweak the widgets
     'crispy_forms', #for very crispy forms
     'home',

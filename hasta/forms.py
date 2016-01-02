@@ -2,6 +2,7 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Div, Field
 from crispy_forms.bootstrap import FormActions,StrictButton
+from localflavor.tr.forms import TRIdentificationNumberField
 from .models import Hasta, KateterOlayi
 import datetime
 
@@ -19,6 +20,8 @@ class HastaForm(forms.ModelForm):
                 'soyad'
             )
         )
+    tckn = TRIdentificationNumberField()
+
     class Meta:
         fields = ['tckn','ad','soyad']
         model = Hasta
