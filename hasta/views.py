@@ -20,3 +20,7 @@ def add_hasta(request):
     context = {'hastaForm':hastaForm,'kateterOlayiForm':kateterOlayiForm}
     return render(request,'hasta/add_hasta.html', context)
 
+def hasta_list(request):
+    hastalar = request.user.profil.merkez.hasta_set.all()
+    context = {'hastalar':hastalar,}
+    return render(request,'hasta/hasta_list.html', context)
