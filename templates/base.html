@@ -45,12 +45,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">hemo-survey</a>
+          <a class="navbar-brand" href="{% url 'home' %}">hemo-survey</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="#">Olay</a></li>
-            <li><a href="#">Gözlem</a></li>
+            <li><a href="{% url 'hasta_list' %}">Hastalar</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if request.user.is_authenticated %}
