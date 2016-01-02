@@ -6,6 +6,7 @@ class Merkez(models.Model):
     def __str__(self):
         return self.isim
     isim = models.CharField(max_length=60,unique=True)
+
     class Meta:
         verbose_name_plural = "merkezler"
 
