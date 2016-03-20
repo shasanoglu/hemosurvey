@@ -15,14 +15,23 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post">
-        <div class="row">
-            {% crispy hastaForm %}
+    <div class="alert alert-info" role="alert">
+        Burada girdiğiniz tüm bilgileri sonradan değiştirebilirsiniz.
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+        <form method="post">
+            <div class="row">
+                {% crispy hastaForm %}
+            </div>
+            <div class="row">
+                <h3>Mevcut kateter bilgileri</h3>
+                {% crispy kateterOlayiForm %}
+            </div>
+        </form>
         </div>
-        <div class="row">
-            {% crispy kateterOlayiForm %}
-        </div>
-    </form>
+    </div>
 
 
 {% endblock %}

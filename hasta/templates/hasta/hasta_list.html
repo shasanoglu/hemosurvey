@@ -28,8 +28,8 @@
         <tbody>
             {% for hasta in hastalar %}
                 <tr>
-                    <td>{{ hasta.ad }}</td>
-                    <td>{{ hasta.soyad }}</td>
+                    <td><a href="{% url "view_hasta" pk=hasta.pk %}"> {{ hasta.ad }} </a></td>
+                    <td><a href="{% url "view_hasta" pk=hasta.pk %}"> {{ hasta.soyad }} </a></td>
                     <td>{{ hasta.tckn }}</td>
                 </tr>
             {% endfor %}

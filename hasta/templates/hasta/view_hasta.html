@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+    {% include 'custom-widgets/date-widget-assets.html' %}
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+            $('#id_kof-takilma_tarihi').datetimepicker({
+                format:'DD/MM/YYYY'
+            });
+        });
+    </script>
+
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12 col-md-5">
+            <h3>Hasta bilgileri</h3>
+            <div class = "row">
+                <table class="table">
+                    <tr>
+                        <th>Ad</th>
+                        <td>{{ hasta.ad }}</td>
+                    </tr>
+                    <tr>
+                        <th>Soyad</th>
+                        <td>{{ hasta.soyad }}</td>
+                    </tr>
+                    <tr>
+                        <th>Merkez</th>
+                        <td>{{ hasta.merkez.isim }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="row">
+                <div class="text-right">
+                    <a class="btn btn-default" data-toggle="tooltip" title="Hasta bilgilerini değiştir" href="{% url "edit_hasta" pk=hasta.id %}" role="button">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-5 col-md-offset-2">
+            <h3>Kateterler</h3>
+            <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Tip</th>
+                            <th>Takılma tarihi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for kateter in hasta.kateterolayi_set.all %}
+                            <tr>
+                                <td>{{ kateter.verbose_tip }}</td>
+                                <td>{{ kateter.takilma_tarihi }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <h4>Yeni kateter</h4>
+                <form method="post">
+                    {% crispy kateterOlayiForm %}
+                    <input type="hidden" name="command" value="new_kateter">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
