@@ -6,15 +6,19 @@
 <div class="col-sm-12 col-md-4 col-md-push-4">
 
     {% if form.errors %}
-    <p>Kullanıcı adı ve parola eşleşmedi.</p>
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <p>Kullanıcı adı ve parola eşleşmedi.</p>
+        </div>
     {% endif %}
 
     {% if next %}
-        {% if user.is_authenticated %}
-        <p>Bu sayfayı görmeye (veya bu işlemi yapmaya) yetkiniz yok. Yetkisi olan bir kullanıcı oturum açabilir.</p>
-        {% else %}
-        <p>Bu sayfayı görebilmek için lütfen oturum açın</p>
-        {% endif %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            {% if user.is_authenticated %}
+                <p>Bu sayfayı görmeye (veya bu işlemi yapmaya) yetkiniz yok. Yetkisi olan bir kullanıcı oturum açabilir.</p>
+            {% else %}
+                <p>Bu sayfayı görebilmek için lütfen oturum açın</p>
+            {% endif %}
+        </div>
     {% endif %}
 
         <form method="post" action="{% url 'login' %}">

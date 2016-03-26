@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Hemo-survey</title>
+    <title>TR-HIES</title>
 
     <!-- Bootstrap core CSS -->
     <!-- Latest compiled and minified CSS -->
@@ -45,11 +45,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{% url 'home' %}">hemo-survey</a>
+          <a class="navbar-brand" href="{% url 'home' %}">TR-HIES</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="{% url 'hasta_list' %}">Hastalar</a></li>
+            <li><a href="{% url 'hasta_list' %}">Hasta listesi</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if request.user.is_authenticated %}

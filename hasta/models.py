@@ -2,6 +2,8 @@ from django.db import models
 from home.models import Merkez
 import datetime
 from localflavor.tr.tr_provinces import PROVINCE_CHOICES
+from antibiyogram.models import Mikroorganizma,Antibiyotik
+from django.core.exceptions import ObjectDoesNotExist
 
 class Hasta(models.Model):
     def __str__(self):
@@ -28,8 +30,6 @@ class Hasta(models.Model):
     diyaliz_ilk_yil = models.IntegerField(verbose_name="Diyalize ilk girdiği yıl", choices=YEAR_CHOICES, default=datetime.datetime.now().year-10)
     calisma_durumu = models.CharField(verbose_name='Çalışma durumu',choices=CALISMA_CHOICES,max_length=1,default='h')
     yasadigi_il = models.CharField(verbose_name='Yaşadığı il',max_length=2,choices=PROVINCE_CHOICES,default='34')
-
-
 
     #Diyaliz için altta yatan hastalık
     ayh_HT = models.BooleanField(verbose_name="HT",default=False)
@@ -71,6 +71,9 @@ class Hasta(models.Model):
     class Meta:
         verbose_name_plural = "hastalar"
 
+    def verbose_cinsiyet(self):
+        return dict(self.SEX_CHOICES)[self.cinsiyet]
+
 
 class KateterOlayi(models.Model):
     TIP_CHOICES = (
@@ -78,11 +81,33 @@ class KateterOlayi(models.Model):
         ('kalici_k','Kalıcı kateter'),
         ('fistul','Fistül'),
     )
+    MERKEZ_CHOICES = (
+        ('d','Devlet Hastanesi'),
+        ('a','Araştırma Hastanesi'),
+        ('u','Üniversite Hastanesi'),
+        ('o','Özel Hastane')
+    )
+    YER_CHOICES = (
+        ('s','subklavian'),
+        ('j','juguler'),
+        ('f','femoral')
+    )
+    NEDEN_CHOICES = (
+        ('c','Çalışmaması'),
+        ('e','Enfekte olması'),
+        ('k','Kendiliğinden çıkması'),
+        ('d','Diğer')
+    )
     hasta = models.ForeignKey(Hasta)
     created_at = models.DateField(auto_now_add=True,editable=False,verbose_name="oluşturulma tarihi")
     modified_at = models.DateField(auto_now=True,editable=False,verbose_name="değiştirilme tarihi")
-    takilma_tarihi = models.DateField(verbose_name="takılma tarihi",)
+
     tip = models.CharField(max_length=10,choices=TIP_CHOICES)
+    takilma_tarihi = models.DateField(verbose_name="Takılma/Açılma tarihi",)
+    takildigi_merkez = models.CharField(verbose_name='Takıldığı/açıldığı merkez',max_length=1,default='a',choices=MERKEZ_CHOICES)
+    yeri = models.CharField(verbose_name="Yeri",max_length=1,default='s',choices=YER_CHOICES)
+    degisim_nedeni = models.CharField(verbose_name='Değişim nedeni',default='d',choices=NEDEN_CHOICES,max_length=1)
+
 
     class Meta:
         verbose_name_plural = "kateter olayları"
@@ -91,3 +116,58 @@ class KateterOlayi(models.Model):
 
     def verbose_tip(self):
         return dict(self.TIP_CHOICES)[self.tip]
+
+    def verbose_yeri(self):
+        s = ''
+        if not self.tip == 'fistul':
+            s = dict(self.YER_CHOICES)[self.yeri]
+        return s
+
+    def verbose_degisim_nedeni(self):
+        s = ''
+        if not self.tip == 'fistul':
+            s = dict(self.NEDEN_CHOICES)[self.degisim_nedeni]
+        return s
+
+    def verbose_takildigi_merkez(self):
+        return dict(self.MERKEZ_CHOICES)[self.takildigi_merkez]
+
+class DiyalizOlayi(models.Model):
+    kateter = models.ForeignKey(KateterOlayi)
+    hasta = models.ForeignKey(Hasta)
+
+    created_at = models.DateField(auto_now_add=True,editable=False,verbose_name="oluşturulma tarihi")
+    modified_at = models.DateField(auto_now=True,editable=False,verbose_name="değiştirilme tarihi")
+
+    isi_hiperemi_puy = models.BooleanField(verbose_name='FİSTÜL/KATETER BÖLGESİNSE ISI ARTIŞI/HİPEREMİ/PÜY VARLIĞI',default=False)
+
+    def available_etkens(self):
+        return Mikroorganizma.objects.exclude(etken__olay=self).order_by('kategori','ad')
+
+class Etken(models.Model):
+    olay = models.ForeignKey(DiyalizOlayi)
+    mikroorganizma = models.ForeignKey(Mikroorganizma)
+
+    def get_duyarliliklar(self):
+        duyarliliklar = []
+        for antibiyotik in self.mikroorganizma.antibiyotikler.all():
+            try:
+                duyarlilik = self.duyarlilik_set.get(antibiyotik=antibiyotik)
+            except ObjectDoesNotExist:
+                duyarlilik = Duyarlilik.objects.create(antibiyotik=antibiyotik,etken=self)
+            duyarliliklar.append(duyarlilik)
+        return duyarliliklar
+
+
+
+DIRENC_CHOICES = (
+    ('d','Duyarli'),
+    ('o','Orta Duyarlı'),
+    ('r','Dirençli'),
+)
+
+class Duyarlilik(models.Model):
+    etken = models.ForeignKey(Etken)
+    antibiyotik = models.ForeignKey(Antibiyotik)
+    direnc = models.CharField(verbose_name='Direnç',max_length=1,blank=False,choices=DIRENC_CHOICES)
+

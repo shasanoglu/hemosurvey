@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'crispy_forms', #for very crispy forms
     'home',
     'hasta',
+    'antibiyogram',
 )
 
 MIDDLEWARE_CLASSES = (

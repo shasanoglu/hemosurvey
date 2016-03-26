@@ -3,7 +3,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Div, Field
 from crispy_forms.bootstrap import FormActions,StrictButton, InlineRadios
 from localflavor.tr.forms import TRIdentificationNumberField
-from .models import Hasta, KateterOlayi
+from .models import Hasta, KateterOlayi, DiyalizOlayi
+from antibiyogram.models import Mikroorganizma
 import datetime
 
 
@@ -85,6 +86,19 @@ class UpdateHastaForm(HastaForm):
             ),
         )
 
+class superDateField(forms.DateInput):
+    class Media:
+        css = {
+            'all' : (
+                'datepicker/css/bootstrap-datetimepicker.min.css',
+            ),
+        }
+        js = (
+            'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/locale/tr.js',
+            'datepicker/js/bootstrap-datetimepicker.min.js',
+            'datepicker/js/datepicker-initialize.js'
+        )
 
 class KateterOlayiForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -94,16 +108,56 @@ class KateterOlayiForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 '',
-                Field('takilma_tarihi',template="custom-widgets/date-widget.html"),
-                'tip',
+                Field('tip',css_class='tip-select'),
+                Field('takilma_tarihi',template="custom-widgets/date-widget.html", css_class="datepicker"),
+                'takildigi_merkez',
+                Div('yeri','degisim_nedeni',css_class="fistul-hide")
             ),
             FormActions(
                 StrictButton("Ekle",type='submit')
             ),
         )
 
-    takilma_tarihi = forms.DateField(input_formats=['%d/%m/%Y','%d.%m.%Y'],initial=datetime.date.today(),widget=forms.DateInput(format='%d/%m/%Y'))
+    takilma_tarihi = forms.DateField(input_formats=['%d/%m/%Y','%d.%m.%Y'],initial=datetime.date.today(),widget=superDateField(format='%d/%m/%Y'))
 
     class Meta:
-        fields = ['takilma_tarihi','tip']
+        fields = [
+            'tip','takilma_tarihi',
+            'takildigi_merkez',
+            'yeri','degisim_nedeni'
+        ]
         model = KateterOlayi
+
+    class Media:
+        js = ('js/kateter-tip-select.js',)
+
+class OlayForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(OlayForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout=Layout(
+            Fieldset(
+                'Diyaliz olayı',
+                'isi_hiperemi_puy',
+            )
+        )
+    class Meta:
+        model = DiyalizOlayi
+        fields = [
+            'isi_hiperemi_puy',
+        ]
+
+class AddEtkenForm(forms.Form):
+    def __init__(self,*args, **kwargs):
+        queryset = kwargs.pop('queryset')
+        super().__init__(*args, **kwargs)
+        self.fields['mikroorganizmalar'].queryset = queryset
+        self.helper = FormHelper()
+        #self.helper.form_class = 'form-inline'
+        #self.helper.field_template = 'bootstrap3/layout/inline_field.html'
+        self.helper.form_tag = False
+        self.helper.layout=Layout(
+            'mikroorganizmalar'
+        )
+    mikroorganizmalar = forms.ModelMultipleChoiceField(required=False,queryset=Mikroorganizma.objects.all(),label='Etken olarak eklemek istediğiniz mikroorganizmaları seçin')

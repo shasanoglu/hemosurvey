@@ -2,24 +2,23 @@
 {% load crispy_forms_tags %}
 
 {% block head %}
-    {{ kateterOlayiForm.media }}
+    {{ form.media }}
 
 {% endblock %}
 
 {% block content %}
     <div class="alert alert-info" role="alert">
-        Burada girdiğiniz bilgileri (kateter/fistül hariç) sonradan değiştirebilirsiniz.
+        Burada girdiğiniz bilgileri sonradan değiştirebilirsiniz.
     </div>
 
     <div class="row">
         <div class="col-md-12">
         <form method="post">
             <div class="row">
-                {% crispy hastaForm %}
-            </div>
-            <div class="row">
-                <h3>Mevcut kateter bilgileri</h3>
-                {% crispy kateterOlayiForm %}
+                <form method="post">
+                    {% crispy form %}
+                    <button type="submit" class="btn btn-default">Kaydet</button>
+                </form>
             </div>
         </form>
         </div>

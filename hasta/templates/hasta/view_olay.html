@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+    {{ form.media }}
+
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Diyaliz Olayı Ekranı</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <h3>Hasta bilgileri</h3>
+            <div class = "row">
+                <table class="table">
+                    <tr>
+                        <th>Ad</th>
+                        <td>{{ hasta.ad }}</td>
+                    </tr>
+                    <tr>
+                        <th>Soyad</th>
+                        <td>{{ hasta.soyad }}</td>
+                    </tr>
+                    <tr>
+                        <th>Doğum yılı</th>
+                        <td>{{ hasta.dogum_yili }}</td>
+                    </tr>
+                    <tr>
+                        <th>Cinsiyet</th>
+                        <td>{{ hasta.verbose_cinsiyet }}</td>
+                    </tr>
+                    <tr>
+                        <th>Merkez</th>
+                        <td>{{ hasta.merkez.isim }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6">
+            <h3>Kateter Bilgileri</h3>
+            <div class = "row">
+                <table class="table">
+                    <tr>
+                        <th>Tip</th>
+                        <td>{{ kateter.verbose_tip }}</td>
+                    </tr>
+                    <tr>
+                        <th>Takılma/Açılma tarihi</th>
+                        <td>{{ kateter.takilma_tarihi }}</td>
+                    </tr>
+                    <tr>
+                        <th>Yeri</th>
+                        <td>{{ kateter.verbose_yeri }}</td>
+                    </tr>
+                    <tr>
+                        <th>Takıldığı/açıldığı merkez</th>
+                        <td>{{ kateter.verbose_takildigi_merkez }}</td>
+                    </tr>
+                    <tr>
+                        <th>Değişim nedeni</th>
+                        <td>{{ kateter.verbose_degisim_nedeni }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <form method="post">
+        <div class="row">
+            <div class="col-md-12">
+            <form method="post">
+                <div class="row">
+                    {% crispy olay_form %}
+                </div>
+            </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <button type="submit" class="btn btn-default">Kaydet</button>
+        </div>
+
+        <div class="row">
+            {% for etken in olay.etken_set.all %}
+                <p>{{ etken.mikroorganizma.ad }}</p>
+            {% endfor %}
+            <div>
+                {% crispy etken_form %}
+                <button type="submit" name="etken-ekle" value="ekle" class="btn btn-default">Ekle</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <button type="submit" class="btn btn-default">Kaydet</button>
+        </div>
+    </form>
+
+
+{% endblock %}

@@ -2,16 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block head %}
-    {% include 'custom-widgets/date-widget-assets.html' %}
-
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip();
-            $('#id_kof-takilma_tarihi').datetimepicker({
-                format:'DD/MM/YYYY'
-            });
-        });
-    </script>
+    {{ kateterOlayiForm.media }}
 
 {% endblock %}
 
@@ -30,6 +21,14 @@
                         <td>{{ hasta.soyad }}</td>
                     </tr>
                     <tr>
+                        <th>Doğum yılı</th>
+                        <td>{{ hasta.dogum_yili }}</td>
+                    </tr>
+                    <tr>
+                        <th>Cinsiyet</th>
+                        <td>{{ hasta.verbose_cinsiyet }}</td>
+                    </tr>
+                    <tr>
                         <th>Merkez</th>
                         <td>{{ hasta.merkez.isim }}</td>
                     </tr>
@@ -38,19 +37,22 @@
             <div class="row">
                 <div class="text-right">
                     <a class="btn btn-default" data-toggle="tooltip" title="Hasta bilgilerini değiştir" href="{% url "edit_hasta" pk=hasta.id %}" role="button">
+                        Diğer bilgiler / Düzenle
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                     </a>
                 </div>
             </div>
         </div>
-        <div class="col-sm-12 col-md-5 col-md-offset-2">
+        <div class="col-sm-12 col-md-6 col-md-offset-1">
             <h3>Kateterler</h3>
             <div class="row">
                 <table class="table">
                     <thead>
                         <tr>
                             <th>Tip</th>
-                            <th>Takılma tarihi</th>
+                            <th>Takılma/Açılma tarihi</th>
+                            <th>Yeri</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,6 +60,8 @@
                             <tr>
                                 <td>{{ kateter.verbose_tip }}</td>
                                 <td>{{ kateter.takilma_tarihi }}</td>
+                                <td>{{ kateter.verbose_yeri }}</td>
+                                <td><a class="btn btn-default" href="{% url 'create_olay' kateter.id %}" role="button">Olay ekle</a></td>
                             </tr>
                         {% endfor %}
                     </tbody>
