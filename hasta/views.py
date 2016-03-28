@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
-from .forms import HastaForm,KateterOlayiForm, UpdateHastaForm, OlayForm, AddEtkenForm
-from .models import Hasta, KateterOlayi, DiyalizOlayi
+from .forms import HastaForm,KateterOlayiForm, UpdateHastaForm, OlayForm, AddEtkenForm, DuyarlilikForm
+from .models import Hasta, KateterOlayi, DiyalizOlayi, Etken
+from antibiyogram.models import Mikroorganizma
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
@@ -96,6 +97,27 @@ def create_olay(request,kateter_id):
 
 @login_required
 def view_olay(request,olay_id):
+    def get_etkenler():
+        etkenler = []
+        for etken in olay.etken_set.all():
+            duyarlilik_forms = []
+            for duyarlilik in etken.get_duyarliliklar():
+                if request.method == 'GET':
+                    duyarlilik_forms.append(DuyarlilikForm(instance=duyarlilik,
+                                                           direnc_label_name=duyarlilik.antibiyotik.uzun_ad,
+                                                           prefix='d-{}'.format(duyarlilik.id)))
+                elif request.method == 'POST':
+                    duyarlilik_forms.append(DuyarlilikForm(request.POST,
+                                                           instance=duyarlilik,
+                                                           direnc_label_name=duyarlilik.antibiyotik.uzun_ad,
+                                                           prefix='d-{}'.format(duyarlilik.id)))
+            etkenler.append({
+                'instance': etken,
+                'duyarlilik_forms': duyarlilik_forms,
+            })
+        return etkenler
+
+
     olay = get_object_or_404(DiyalizOlayi,id=olay_id)
     kateter = olay.kateter
     hasta = kateter.hasta
@@ -106,21 +128,48 @@ def view_olay(request,olay_id):
     if request.method == 'GET':
         olay_form = OlayForm(instance=olay)
         etken_form = AddEtkenForm(queryset=olay.available_etkens())
+        etkenler = get_etkenler()
     elif request.method == 'POST':
         olay_form = OlayForm(request.POST,instance=olay)
         etken_form = AddEtkenForm(request.POST,queryset=olay.available_etkens())
 
         if "etken-ekle" in request.POST:
             if etken_form.is_valid():
-                mikropsToAdd = etken_form.etken_form['mikroorganizmalar']
-                for mikrop in mikropsToAdd.all():
-                    Etken.objects.
+                mikropsToAdd = etken_form.cleaned_data['mikroorganizmalar']
+                for mikrop in mikropsToAdd:
+                    if not olay.etken_set.filter(mikroorganizma=mikrop).exists():
+                        Etken.objects.create(olay=olay,mikroorganizma=mikrop)
+            etkenler = get_etkenler()
+        elif "delete-etken" in request.POST:
+            etken = get_object_or_404(Etken,id=request.POST["delete-etken"])
+            etken.delete()
+            etkenler = get_etkenler()
         else:
-            pass
+            etkenler = get_etkenler()
+            all_is_well = True
+
+            if olay_form.is_valid():
+                olay_form.save()
+            else:
+                all_is_well = False
+
+            for etken in etkenler:
+                for duyarlilik_form in etken['duyarlilik_forms']:
+                    if duyarlilik_form.is_valid():
+                        duyarlilik_form.save()
+                    else:
+                        all_is_well = False
+
+            if all_is_well:
+                return redirect('view_olay',olay_id=olay.id)
+
+
 
     return render(request,'hasta/view_olay.html',{
         'olay_form':olay_form,
         'hasta':hasta,
         'kateter':kateter,
+        'olay':olay,
         'etken_form':etken_form,
+        'etkenler': etkenler,
     })

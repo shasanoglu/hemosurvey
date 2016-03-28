@@ -13,7 +13,14 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-6">
-            <h3>Hasta bilgileri</h3>
+            <h3>
+                Hasta bilgileri
+                <a href="{% url 'view_hasta' pk=hasta.pk %}">
+                <button type="button" class="btn btn-default btn-default pull-right">
+                    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Hasta sayfasına dön
+                </button>
+                </a>
+            </h3>
             <div class = "row">
                 <table class="table">
                     <tr>
@@ -72,11 +79,9 @@
     <form method="post">
         <div class="row">
             <div class="col-md-12">
-            <form method="post">
                 <div class="row">
                     {% crispy olay_form %}
                 </div>
-            </form>
             </div>
         </div>
 
@@ -85,18 +90,47 @@
         </div>
 
         <div class="row">
-            {% for etken in olay.etken_set.all %}
-                <p>{{ etken.mikroorganizma.ad }}</p>
+            <h3>Etkenler</h3>
+            {% if not etkenler %}
+                <div class="alert alert-warning" role="alert">Henüz bir etken eklenmemiş.</div>
+            {% endif %}
+
+            {% for etken in etkenler %}
+                <div class="col-sm-12 col-md-6">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                          <em>{{ etken.instance.mikroorganizma.ad }}</em>
+                          <button type="submit" name="delete-etken" value="{{ etken.instance.id }}" class="btn btn-sm btn-danger">
+                            <span class="glyphicon glyphicon-erase" aria-hidden="true"></span> Sil
+                          </button>
+                      </div>
+                      <div class="panel-body">
+                          {% for form in etken.duyarlilik_forms %}
+                              <div class="row">
+                                  {% crispy form %}
+                              </div>
+                              <br>
+                          {% endfor %}
+                      </div>
+
+                    </div>
+                </div>
             {% endfor %}
-            <div>
-                {% crispy etken_form %}
-                <button type="submit" name="etken-ekle" value="ekle" class="btn btn-default">Ekle</button>
-            </div>
         </div>
 
         <div class="row">
             <button type="submit" class="btn btn-default">Kaydet</button>
         </div>
+
+        <div class="row">
+            <h3>Etken ekle</h3>
+            {% crispy etken_form %}
+            <p>*Ctrl'e basılı tutarak birden fazla seçebilirsiniz</p>
+            <button type="submit" name="etken-ekle" value="ekle" class="btn btn-default">Seçilen etkenleri ekle</button>
+        </div>
+
+
+
     </form>
 
 

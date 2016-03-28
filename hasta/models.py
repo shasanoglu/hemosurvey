@@ -58,6 +58,7 @@ class Hasta(models.Model):
     AntiHBcIgG = models.BooleanField(verbose_name="AntiHBcIgG",default=False)
     AntiHBcIgM = models.BooleanField(verbose_name="AntiHBcIgM",default=False)
     AntiHCV = models.BooleanField(verbose_name="AntiHCV",default=False)
+    AntiHIV = models.BooleanField(verbose_name="AntiHIV",default=False)
 
     MRSA_CHOICES = (('v','Var'),('y','Yok'),('b','Bilinmiyor'))
     YES_NO_CHOICES = (('e','Evet'),('h','Hayır'),)
@@ -139,10 +140,17 @@ class DiyalizOlayi(models.Model):
     created_at = models.DateField(auto_now_add=True,editable=False,verbose_name="oluşturulma tarihi")
     modified_at = models.DateField(auto_now=True,editable=False,verbose_name="değiştirilme tarihi")
 
+    olay_tarihi = models.DateField(verbose_name="Olay tarihi")
+
     isi_hiperemi_puy = models.BooleanField(verbose_name='FİSTÜL/KATETER BÖLGESİNSE ISI ARTIŞI/HİPEREMİ/PÜY VARLIĞI',default=False)
+    iv_antibiyotik = models.BooleanField(verbose_name="IV ANTİBİYOTİK TEDAVİSİ",default=False)
+    kan_kulturunde_ureme = models.BooleanField(verbose_name="KAN KÜLTÜRÜNDE ÜREME",default=False)
 
     def available_etkens(self):
         return Mikroorganizma.objects.exclude(etken__olay=self).order_by('kategori','ad')
+
+    class Meta:
+        ordering = ['olay_tarihi']
 
 class Etken(models.Model):
     olay = models.ForeignKey(DiyalizOlayi)
@@ -161,6 +169,7 @@ class Etken(models.Model):
 
 
 DIRENC_CHOICES = (
+    ('','Bakılmadı'),
     ('d','Duyarli'),
     ('o','Orta Duyarlı'),
     ('r','Dirençli'),
@@ -169,5 +178,5 @@ DIRENC_CHOICES = (
 class Duyarlilik(models.Model):
     etken = models.ForeignKey(Etken)
     antibiyotik = models.ForeignKey(Antibiyotik)
-    direnc = models.CharField(verbose_name='Direnç',max_length=1,blank=False,choices=DIRENC_CHOICES)
+    direnc = models.CharField(verbose_name='Direnç',max_length=1,blank=True,choices=DIRENC_CHOICES)
 

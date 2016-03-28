@@ -68,12 +68,51 @@
                 </table>
             </div>
             <div class="row">
-                <h4>Yeni kateter</h4>
-                <form method="post">
-                    {% crispy kateterOlayiForm %}
-                    <input type="hidden" name="command" value="new_kateter">
-                </form>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#kateter-form-div" aria-expanded="false" aria-controls="kateter-form-div">
+                    Yeni kateter veya fistül ekle
+                </button>
+                <div class="collapse" id="kateter-form-div">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <form method="post">
+                                {% crispy kateterOlayiForm %}
+                                <input type="hidden" name="command" value="new_kateter">
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
+
+    <div class="row">
+        <h3>Hastaya ait hemodiyaliz ilişkili olaylar</h3>
+        {% if hasta.diyalizolayi_set.exists %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Olay tarihi</th>
+                            <th>Isı artışı / hiperemi / püy</th>
+                            <th>IV Antibiyotik</th>
+                            <th>Kan kültüründe üreme</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for olay in hasta.diyalizolayi_set.all %}
+                            <tr>
+                                <td><a href="{% url 'view_olay' olay_id=olay.id %}">{{ olay.olay_tarihi }}</a></td>
+                                <td>{% if olay.isi_hiperemi_puy %}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{% endif %}</td>
+                                <td>{% if olay.iv_antibiyotik %}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{% endif %}</td>
+                                <td>{% if olay.kan_kulturunde_ureme %}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                Henüz bu hasta için olay eklenmemiş.
+                Olay eklemek için için olayın ilgili olduğu kateterin Olay ekle butonunu tılayınç
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
