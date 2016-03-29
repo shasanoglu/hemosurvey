@@ -1,0 +1,4 @@
+Django
+django-crispy-forms
+django-localflavor
+django-widget-tweaks
