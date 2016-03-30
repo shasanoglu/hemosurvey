@@ -2,4 +2,4 @@ Django
 django-crispy-forms
 django-localflavor
 django-widget-tweaks
-MySQL-python
+mysqlclient

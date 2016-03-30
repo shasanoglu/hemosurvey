@@ -27,7 +27,7 @@ DEBUG_ON_SERVER = False #Set this to true to run a debug session on production s
 if DEBUG and (not DEBUG_ON_SERVER): # if we are on production server secret key is imported from another file
     SECRET_KEY = 'ox0pgnh%huu(mz652@c&&k+a=b8ze7rqt5!#6(z)k)q3skaudt'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['www.tr-hies.org']
 
 
 # Application definition
