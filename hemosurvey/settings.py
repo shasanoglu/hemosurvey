@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 DEBUG_ON_SERVER = False #Set this to true to run a debug session on production server
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -124,5 +124,4 @@ STATIC_ROOT = os.path.join(BASE_DIR,'static_root')
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 #import all secret settings if we are on the production server
-if (not DEBUG) or DEBUG_ON_SERVER:
-    from .secret_settings import *
+from .secret_settings import *
