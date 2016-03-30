@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 
+
 @login_required
 def add_hasta(request):
     if request.method == 'GET':

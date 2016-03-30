@@ -133,6 +133,8 @@ class KateterOlayi(models.Model):
     def verbose_takildigi_merkez(self):
         return dict(self.MERKEZ_CHOICES)[self.takildigi_merkez]
 
+
+
 class DiyalizOlayi(models.Model):
     kateter = models.ForeignKey(KateterOlayi)
     hasta = models.ForeignKey(Hasta)
@@ -145,6 +147,44 @@ class DiyalizOlayi(models.Model):
     isi_hiperemi_puy = models.BooleanField(verbose_name='FİSTÜL/KATETER BÖLGESİNSE ISI ARTIŞI/HİPEREMİ/PÜY VARLIĞI',default=False)
     iv_antibiyotik = models.BooleanField(verbose_name="IV ANTİBİYOTİK TEDAVİSİ",default=False)
     kan_kulturunde_ureme = models.BooleanField(verbose_name="KAN KÜLTÜRÜNDE ÜREME",default=False)
+
+    OLASI_KAYNAK_CHOICES = (
+        ('v', 'Vasküler giriş'),
+        ('vh', 'Vasküler giriş harici'),
+        ('k', 'Kontaminasyon'),
+        ('b', 'Belirsiz'),
+    )
+    ETKEN_ALINDI_MI_CHOICES = (
+        ('e', 'Evet'),
+        ('h', 'Hayır')
+    )
+
+    #Kan kulturunde ureme ile ilgili
+    kateterde_ureme = models.BooleanField(verbose_name="Kateterde üreme",default=False)
+    periferde_ureme = models.BooleanField(verbose_name="Periferde üreme",default=False)
+    etken_alindi_mi = models.CharField(verbose_name="Etken alındı mı?",max_length=1,default='h',choices=ETKEN_ALINDI_MI_CHOICES)
+    olasi_kaynak = models.CharField(verbose_name="Pozitif kan kültürünün olası kaynağı",max_length=2,default='b',choices=OLASI_KAYNAK_CHOICES)
+
+    #spesifik problemler
+    ates = models.BooleanField(verbose_name="Ateş",default=False)
+    hipotansiyon = models.BooleanField(verbose_name="Hipotansiyon (TA< 120/80)",default=False)
+    acik_yara = models.BooleanField(verbose_name="Kateter / Fistül girişi dışında bir bölgede açık yara",default=False)
+    selulit = models.BooleanField(verbose_name="Kateter/Fistül girişi dışında bir bölgede selülit",default=False)
+    uriner_enfeksiyon = models.BooleanField(verbose_name="Üriner enfeksiyon",default=False)
+    pnomoni_sye = models.BooleanField(verbose_name="Pnömoni/ solunum yolu enfeksiyonu",default=False)
+    diger = models.BooleanField(verbose_name="Diğer",default=False)
+
+    GELISEN_CHOICES = (
+        ('e', 'Evet'),
+        ('h', 'Hayır'),
+        ('b', 'Bilinmiyor'),
+    )
+
+    #OLAYA BAĞLI GELİŞEN MORTALİTE/MORBİDİTE
+    kateter_cikarildi = models.CharField(verbose_name="Kateter çıkarıldı",max_length=1,default='b',choices=GELISEN_CHOICES)
+    hospitalizasyon = models.CharField(verbose_name="Hospitalizasyon",max_length=1,default='b',choices=GELISEN_CHOICES)
+    olum = models.CharField(verbose_name="Ölüm",max_length=1,default='b',choices=GELISEN_CHOICES)
+
 
     def available_etkens(self):
         return Mikroorganizma.objects.exclude(etken__olay=self).order_by('kategori','ad')

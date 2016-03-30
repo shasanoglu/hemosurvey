@@ -138,10 +138,43 @@ class OlayForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout=Layout(
-            Field('olay_tarihi',template="custom-widgets/date-widget.html", css_class="datepicker"),
-            Fieldset(
-                'Olay tipi',
-                'isi_hiperemi_puy','iv_antibiyotik','kan_kulturunde_ureme',
+            Div(
+                Div(
+                    Field('olay_tarihi',template="custom-widgets/date-widget.html", css_class="datepicker"),
+                    Fieldset(
+                        'Olay tipi',
+                        'isi_hiperemi_puy','iv_antibiyotik',
+                        Field('kan_kulturunde_ureme',css_class='kultur-select'),
+                    ),
+                    css_class='col-sm-12 col-md-6'
+                ),
+                Div(
+                    Fieldset(
+                        'Kan kültüründe üreme ile ilgili bilgiler',
+                        'kateterde_ureme','periferde_ureme','etken_alindi_mi','olasi_kaynak',
+                    ),
+                    css_class='col-sm-12 col-md-6 kultur-hide'
+                ),
+                css_class='row'
+            ),
+            Div(
+                Div(
+                    Fieldset(
+                        'Spesifik problemler',
+                        'ates','hipotansiyon','acik_yara','selulit','uriner_enfeksiyon','pnomoni_sye','diger',
+                    ),
+                    css_class='col-sm-12 col-md-6'
+                ),
+                Div(
+                    Fieldset(
+                        'Olaya bağlı gelişen mortalite/morbidite',
+                        InlineRadios('kateter_cikarildi'),
+                        InlineRadios('hospitalizasyon'),
+                        InlineRadios('olum')
+                    ),
+                    css_class='col-sm-12 col-md-6 kultur-hide'
+                ),
+                css_class='row'
             )
         )
 
@@ -182,6 +215,12 @@ class OlayForm(forms.ModelForm):
             self.add_error('iv_antibiyotik','En az bir olay tipi seçmelisiniz')
             self.add_error('kan_kulturunde_ureme','En az bir olay tipi seçmelisiniz')
 
+        kateterde_ureme = cleaned_data.get("kateterde_ureme")
+        periferde_ureme = cleaned_data.get("periferde_ureme")
+        if kan_kulturunde_ureme and (not (kateterde_ureme or periferde_ureme)):
+            self.add_error('kateterde_ureme','En az bir üreme tipi eklemelisiniz')
+            self.add_error('periferde_ureme','En az bir üreme tipi eklemelisiniz')
+
     olay_tarihi = forms.DateField(input_formats=['%d/%m/%Y','%d.%m.%Y'],initial=datetime.date.today(),widget=superDateField(format='%d/%m/%Y'))
 
     class Meta:
@@ -189,7 +228,13 @@ class OlayForm(forms.ModelForm):
         fields = [
             'olay_tarihi',
             'isi_hiperemi_puy','iv_antibiyotik','kan_kulturunde_ureme',
+            'kateterde_ureme','periferde_ureme','etken_alindi_mi','olasi_kaynak',
+            'ates','hipotansiyon','acik_yara','selulit','uriner_enfeksiyon','pnomoni_sye','diger',
+            'kateter_cikarildi','hospitalizasyon','olum',
         ]
+
+    class Media:
+        js = ('js/kultur-select.js',)
 
 class AddEtkenForm(forms.Form):
     def __init__(self,*args, **kwargs):
