@@ -74,11 +74,51 @@ MIKROORGANIZMALAR = {
         'category' : 'Gram Pozitif',
         'ab': ['DAPTO','GENTHL','LNZ','VANC'],
     },
+    'Staphylococcus aureus' : {
+        'category' : 'Gram Pozitif',
+        'ab': ['CIPRO','LEVO','MOXI','CLIND','DAPTO','DOXY','MINO','ERYTH','GENT','LNZ','OX','CEFOX','METH','RIF','TETRA','TIG','TMZ','VANC',],
+    },
     'Acinetobacter' : {
         'category' : 'Gram Negatif',
         'ab': [
             'AMK', 'AMPSUL', 'AZT', 'CEFEP', 'CEFTAZ', 'CIPRO', 'LEVO', 'COL', 'PB', 'GENT', 'IMI', 'MERO', 'DORI',
             'PIP', 'PIPTAZ', 'TETRA', 'DOXY', 'MINO', 'TMZ', 'TOBRA'
+        ],
+    },
+    'Escherichia coli' : {
+        'category' : 'Gram Negatif',
+        'ab': [
+            'AMK','AMP','AMPSUL','AMXCLV','AZT','CEFAZ','CEFEP','CEFOT','CEFTRX','CEFTAZ','CEFUR','CEFOX','CTET','CIPRO','LEVO','MOXI','COL','PB','ERTA','GENT','IMI','MERO','DORI','PIPTAZ','TETRA','DOXY','MINO','TIG','TMZ','TOBRA'
+        ],
+    },
+    'Enterobacter' : {
+        'category' : 'Gram Negatif',
+        'ab': [
+            'AMK','AMP','AMPSUL','AMXCLV','AZT','CEFAZ','CEFEP','CEFOT','CEFTRX','CEFTAZ','CEFUR','CEFOX','CTET','CIPRO','LEVO','MOXI','COL','PB','ERTA','GENT','IMI','MERO','DORI','PIPTAZ','TETRA','DOXY','MINO','TIG','TMZ','TOBRA'
+        ],
+    },
+    'Klebsiella pneumonia' : {
+        'category' : 'Gram Negatif',
+        'ab': [
+            'AMK','AMP','AMPSUL','AMXCLV','AZT','CEFAZ','CEFEP','CEFOT','CEFTRX','CEFTAZ','CEFUR','CEFOX','CTET','CIPRO','LEVO','MOXI','COL','PB','ERTA','GENT','IMI','MERO','DORI','PIPTAZ','TETRA','DOXY','MINO','TIG','TMZ','TOBRA'
+        ],
+    },
+    'Klebsiella oxytoca' : {
+        'category' : 'Gram Negatif',
+        'ab': [
+            'AMK','AMP','AMPSUL','AMXCLV','AZT','CEFAZ','CEFEP','CEFOT','CEFTRX','CEFTAZ','CEFUR','CEFOX','CTET','CIPRO','LEVO','MOXI','COL','PB','ERTA','GENT','IMI','MERO','DORI','PIPTAZ','TETRA','DOXY','MINO','TIG','TMZ','TOBRA'
+        ],
+    },
+    'Pseudomonas aeruginosa' : {
+        'category' : 'Gram Negatif',
+        'ab': [
+            'AMK','AZT','CEFEP','CEFTAZ','CIPRO','LEVO','COL','PB','GENT','IMI','MERO','DORI','PIP','PIPTAZ','TOBRA'
+        ],
+    },
+    'Candida' : {
+        'category' : 'Mantar',
+        'ab': [
+            'ANID','CASPO','FLUCO','FLUCY','ITRA','MICA','VORI'
         ],
     },
 }
@@ -92,7 +132,10 @@ class Command(BaseCommand):
 
     def add_antibiyotikler(self):
         for k,v in ANTIBIYOTIKLER.items():
-            Antibiyotik.objects.get_or_create(ad=k,uzun_ad=v)
+            ab,created = Antibiyotik.objects.get_or_create(ad=k)
+            if created:
+                ab.uzun_ad = v
+                ab.save()
 
     def add_kategoriler(self):
         for kat in KATEGORILER:
