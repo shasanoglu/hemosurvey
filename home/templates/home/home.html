@@ -34,6 +34,15 @@
             <img src="{% static 'bayrak01.png' %}" class="img-responsive center-block" alt="Responsive image">
             <h1 class="text-center">TR-HİES</h1>
             <h2 class="text-center">TÜRKİYE’DE HEMODİYALİZ İLİŞKİLİ ENFEKSİYONLARIN SÜRVEYANSI</h2>
+            <br>
+            {% if user.is_authenticated %}
+                <h3>Web sitesinin kullanımı hakkında…</h3>
+
+                <p>Öncelikle hemodiyaliz ünitesinde diyalize giren tüm hastaları sisteme kaydetmeniz gerekmektedir.
+                Kullanım kolaylığı açısından girilecek bilgileri içeren formlara sayfanızın üst kısmından ulaşabilirsiniz.</p>
+
+                <p>Gözlem çalışması ile ilgili kısımda veritabanı hazır olmadığı için ilgili formlar indirilip, veri girişi ileri tarihte yapılabilir.</p>
+            {% endif %}
         </div>
     </div>
 

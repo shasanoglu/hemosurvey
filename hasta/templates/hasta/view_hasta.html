@@ -40,6 +40,9 @@
                         Diğer bilgiler / Düzenle
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                     </a>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-hasta-modal" title="Hastayı sil">
+                        <span class="glyphicon glyphicon-erase" aria-hidden="true"></span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -56,14 +59,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for kateter in hasta.kateterolayi_set.all %}
-                            <tr>
-                                <td>{{ kateter.verbose_tip }}</td>
-                                <td>{{ kateter.takilma_tarihi }}</td>
-                                <td>{{ kateter.verbose_yeri }}</td>
-                                <td><a class="btn btn-default" href="{% url 'create_olay' kateter.id %}" role="button">Olay ekle</a></td>
-                            </tr>
-                        {% endfor %}
+                        {% with count=hasta.kateterolayi_set.count %}
+                            {% for kateter in hasta.kateterolayi_set.all %}
+                                <tr>
+                                    <td>{{ kateter.verbose_tip }}</td>
+                                    <td>{{ kateter.takilma_tarihi }}</td>
+                                    <td>{{ kateter.verbose_yeri }}</td>
+                                    <td>
+                                        <a class="btn btn-default" href="{% url 'create_olay' kateter.id %}" role="button">Olay ekle</a>
+                                        {% if count > 1 %}
+                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-kateter-modal-{{ kateter.id }}" title="Kateteri sil">
+                                                <span class="glyphicon glyphicon-erase" aria-hidden="true"></span>
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endwith %}
                     </tbody>
                 </table>
             </div>
@@ -111,8 +123,83 @@
         {% else %}
             <div class="alert alert-warning" role="alert">
                 Henüz bu hasta için olay eklenmemiş.
-                Olay eklemek için için olayın ilgili olduğu kateterin Olay ekle butonunu tılayınç
+                Olay eklemek için için olayın ilgili olduğu kateterin Olay ekle butonunu tıklayın.
             </div>
         {% endif %}
     </div>
+{% endblock %}
+
+{% block modals %}
+    <!-- Hasta silme modalı -->
+    <div class="modal fade" id="delete-hasta-modal" tabindex="-1" role="dialog" aria-labelledby="delete-hasta-modal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Hastayı sil!</h4>
+          </div>
+          <div class="modal-body">
+              <p>Bu hastayı sildiğinizde aşağıdakiler de silinecek:</p>
+              <ul>
+                  <li>Hastaya bağlı fistül veya kateterler ({{ hasta.kateterolayi_set.count }} adet)</li>
+                  <li>
+                      Hastaya bağlı olaylar ({{ hasta.diyalizolayi_set.count }} adet)
+                      <ul>
+                          <li>Olaylara bağlı antibiyogram sonuçları</li>
+                      </ul>
+                  </li>
+              </ul>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Vazgeçtim</button>
+              <form action="{% url 'delete_hasta' hasta.id %}" method="post" class="form" style="display: inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">Sil</button>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if hasta.kateterolayi_set.count > 1 %}
+        {% for kateter in hasta.kateterolayi_set.all %}
+            <!-- Kateter silme modalı {{ kateter.id }} -->
+            <div class="modal fade" id="delete-kateter-modal-{{ kateter.id }}" tabindex="-1" role="dialog" aria-labelledby="delete-kateter-modal">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Kateteri sil!</h4>
+                  </div>
+                  <div class="modal-body">
+                      <p>Bu kateteri sildiğinizde aşağıdakiler de silinecek:</p>
+                      <ul>
+                          <li>
+                              {% with count=kateter.diyalizolayi_set.count %}
+                                  Katetere bağlı olaylar ({{ count }} adet)
+                                  {% if count > 0 %}
+                                      <ul>
+                                        {% for olay in kateter.diyalizolayi_set.all %}
+                                          <li>{{ olay.olay_tarihi }} tarihli olay.</li>
+                                        {% endfor %}
+                                      </ul>
+                                  {% endif %}
+                              {% endwith %}
+                          </li>
+                          <li>Bu olaylara bağlı antibiyogram sonuçları</li>
+                      </ul>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Vazgeçtim</button>
+                      <form action="{% url 'delete_kateter' kateter.id %}" method="post" class="form" style="display: inline;">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-danger">Sil</button>
+                      </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+        {% endfor %}
+
+    {% endif %}
 {% endblock %}

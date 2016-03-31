@@ -8,7 +8,12 @@
 
 {% block content %}
     <div class="page-header">
-        <h1>Diyaliz Olayı Ekranı</h1>
+        <h1>
+            Diyaliz Olayı Ekranı
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-olay-modal" title="Olayı sil">
+                <span class="glyphicon glyphicon-erase" aria-hidden="true"></span>
+            </button>
+        </h1>
     </div>
 
     <div class="row">
@@ -128,10 +133,30 @@
             <p>*Ctrl'e basılı tutarak birden fazla seçebilirsiniz</p>
             <button type="submit" name="etken-ekle" value="ekle" class="btn btn-default">Seçilen etkenleri ekle</button>
         </div>
-
-
-
     </form>
 
+{% endblock %}
 
+{% block modals %}
+    <!-- olay silme modalı -->
+    <div class="modal fade" id="delete-olay-modal" tabindex="-1" role="dialog" aria-labelledby="delete-olay-modal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Olayı sil!</h4>
+          </div>
+          <div class="modal-body">
+              <p>Bu olayı ve tüm antibiyogram sonuçlarını silmek istediğinizden emin misiniz?</p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Vazgeçtim</button>
+              <form action="{% url 'delete_olay' olay.id %}" method="post" class="form" style="display: inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">Sil</button>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
 {% endblock %}

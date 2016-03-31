@@ -134,7 +134,13 @@ class KateterOlayiForm(forms.ModelForm):
 
 class OlayForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.hasta = kwargs.pop('hasta',None)
         super(OlayForm, self).__init__(*args, **kwargs)
+        if not self.hasta:
+            try:
+                self.hasta = self.instance.hasta
+            except:
+                pass
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout=Layout(
@@ -189,25 +195,30 @@ class OlayForm(forms.ModelForm):
         before_olay = olay_tarihi - timedelta
         after_olay = olay_tarihi + timedelta
 
+        if self.instance.id:
+            otherObjects = DiyalizOlayi.objects.exclude(id=self.instance.id)
+        else:
+            otherObjects = DiyalizOlayi.objects
+
         if isi_hiperemi_puy:
-            if DiyalizOlayi.objects.filter(olay_tarihi__range=(before_olay, olay_tarihi),isi_hiperemi_puy__exact=True).exists():
+            if otherObjects.filter(olay_tarihi__range=(before_olay, olay_tarihi),isi_hiperemi_puy__exact=True, hasta=self.hasta).exists():
                 self.add_error('isi_hiperemi_puy','Girdiğiniz tarihten 21 gün öncesine kadar başka bir Isı artışı / hiperemi / püy olayı olamaz. Bilgileri bir önceki Isı artışı / hiperemi / püy olayına eklemelisiniz')
 
-            if DiyalizOlayi.objects.filter(olay_tarihi__range=(olay_tarihi, after_olay),isi_hiperemi_puy__exact=True).exists():
+            if otherObjects.filter(olay_tarihi__range=(olay_tarihi, after_olay),isi_hiperemi_puy__exact=True, hasta=self.hasta).exists():
                 self.add_error('isi_hiperemi_puy','Girdiğiniz tarihten 21 gün sonrasına kadar başka bir Isı artışı / hiperemi / püy olayı olamaz. Daha ileri tarihli Isı artışı / hiperemi / püy olayının tarihini geriye alabilirsiniz')
 
         if iv_antibiyotik:
-            if DiyalizOlayi.objects.filter(olay_tarihi__range=(before_olay, olay_tarihi),iv_antibiyotik__exact=True).exists():
+            if otherObjects.filter(olay_tarihi__range=(before_olay, olay_tarihi),iv_antibiyotik__exact=True, hasta=self.hasta).exists():
                 self.add_error('iv_antibiyotik','Girdiğiniz tarihten 21 gün öncesine kadar başka bir IV Antibiyotik olayı olamaz. Bilgileri bir önceki IV Antibiyotik olayına eklemelisiniz')
 
-            if DiyalizOlayi.objects.filter(olay_tarihi__range=(olay_tarihi, after_olay),iv_antibiyotik__exact=True).exists():
+            if otherObjects.filter(olay_tarihi__range=(olay_tarihi, after_olay),iv_antibiyotik__exact=True, hasta=self.hasta).exists():
                 self.add_error('iv_antibiyotik','Girdiğiniz tarihten 21 gün sonrasına kadar başka bir Isı IV Antibiyotik olayı olamaz. Daha ileri tarihli IV Antibiyotik olayının tarihini geriye alabilirsiniz')
 
         if kan_kulturunde_ureme:
-            if DiyalizOlayi.objects.filter(olay_tarihi__range=(before_olay, olay_tarihi),kan_kulturunde_ureme__exact=True).exists():
+            if otherObjects.filter(olay_tarihi__range=(before_olay, olay_tarihi),kan_kulturunde_ureme__exact=True, hasta=self.hasta).exists():
                 self.add_error('kan_kulturunde_ureme','Girdiğiniz tarihten 21 gün öncesine kadar başka bir Kan kültüründe üreme olayı olamaz. Bilgileri bir önceki Kan kültüründe üreme olayına eklemelisiniz')
 
-            if DiyalizOlayi.objects.filter(olay_tarihi__range=(olay_tarihi, after_olay),kan_kulturunde_ureme__exact=True).exists():
+            if otherObjects.filter(olay_tarihi__range=(olay_tarihi, after_olay),kan_kulturunde_ureme__exact=True, hasta=self.hasta).exists():
                 self.add_error('kan_kulturunde_ureme','Girdiğiniz tarihten 21 gün sonrasına kadar başka bir Kan kültüründe üreme olayı olamaz. Daha ileri tarihli Kan kültüründe üreme olayının tarihini geriye alabilirsiniz')
 
         if not (isi_hiperemi_puy or iv_antibiyotik or kan_kulturunde_ureme):

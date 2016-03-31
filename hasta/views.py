@@ -86,7 +86,7 @@ def create_olay(request,kateter_id):
     if request.method == 'GET':
         form = OlayForm()
     elif request.method == 'POST':
-        form = OlayForm(request.POST)
+        form = OlayForm(request.POST,hasta=hasta)
         if form.is_valid():
             olay = form.save(commit=False)
             olay.kateter = kateter
@@ -174,3 +174,25 @@ def view_olay(request,olay_id):
         'etken_form':etken_form,
         'etkenler': etkenler,
     })
+
+
+def delete_hasta(request,hasta_id):
+    hasta = get_object_or_404(Hasta,id=hasta_id)
+    if request.method == 'POST':
+        hasta.delete()
+        return redirect('hasta_list')
+
+def delete_kateter(request,kateter_id):
+    kateter = get_object_or_404(KateterOlayi,id=kateter_id)
+    hasta_id = kateter.hasta.id
+    if request.method == 'POST':
+        kateter.delete()
+        return redirect('view_hasta',pk=hasta_id)
+
+
+def delete_olay(request,olay_id):
+    olay = get_object_or_404(DiyalizOlayi,id=olay_id)
+    hasta_id = olay.hasta.id
+    if request.method == 'POST':
+        olay.delete()
+        return redirect('view_hasta',pk=hasta_id)

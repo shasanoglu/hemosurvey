@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Hasta,KateterOlayi
+from .models import Hasta,KateterOlayi,DiyalizOlayi
 from .models import Etken,Duyarlilik
 
 class KateterOlayiInline(admin.StackedInline):
@@ -19,6 +19,10 @@ class EtkenAdmin(admin.ModelAdmin):
     list_display = ('id','mikroorganizma')
     inlines = [DuyarlilikInline,]
 
+class OlayAdmin(admin.ModelAdmin):
+    list_display = ('id','hasta','kateter','olay_tarihi',)
+
 admin.site.register(Etken,EtkenAdmin)
 admin.site.register(Duyarlilik)
+admin.site.register(DiyalizOlayi,OlayAdmin)
 
