@@ -25,8 +25,8 @@ class Hasta(models.Model):
     dogum_yili = models.IntegerField(verbose_name="Doğum yılı", choices=YEAR_CHOICES, default=datetime.datetime.now().year-50)
     cinsiyet = models.CharField(verbose_name="Cinsiyet",max_length=1,choices=SEX_CHOICES,default="k")
 
-    boy = models.IntegerField(verbose_name="Boy",choices=BOY_CHOICES,default=167)
-    kilo = models.IntegerField(verbose_name="Kilo",choices=KILO_CHOICES,default=72)
+    boy = models.IntegerField(verbose_name="Boy",choices=BOY_CHOICES,default=167, null=True, blank=True)
+    kilo = models.IntegerField(verbose_name="Kilo",choices=KILO_CHOICES,default=72, null=True, blank=True)
     diyaliz_ilk_yil = models.IntegerField(verbose_name="Diyalize ilk girdiği yıl", choices=YEAR_CHOICES, default=datetime.datetime.now().year-10)
     calisma_durumu = models.CharField(verbose_name='Çalışma durumu',choices=CALISMA_CHOICES,max_length=1,default='h')
     yasadigi_il = models.CharField(verbose_name='Yaşadığı il',max_length=2,choices=PROVINCE_CHOICES,default='34')
@@ -53,12 +53,15 @@ class Hasta(models.Model):
     uyusturucu_madde = models.BooleanField(verbose_name="Uyuşturucu madde",default=False)
 
     #Hepatit serolojisi
-    HBsAg = models.BooleanField(verbose_name="HBsAg",default=False)
-    AntiHBs = models.BooleanField(verbose_name="AntiHBs",default=False)
-    AntiHBcIgG = models.BooleanField(verbose_name="AntiHBcIgG",default=False)
-    AntiHBcIgM = models.BooleanField(verbose_name="AntiHBcIgM",default=False)
-    AntiHCV = models.BooleanField(verbose_name="AntiHCV",default=False)
-    AntiHIV = models.BooleanField(verbose_name="AntiHIV",default=False)
+
+
+    SEROLOJI_CHOICES = (('p','Pozitif'), ('n', 'Negatif'), ('b','Bakılmadı'))
+    HBsAg = models.CharField(verbose_name="HBsAg",max_length=1,default='b',choices=SEROLOJI_CHOICES)
+    AntiHBs = models.CharField(verbose_name="AntiHBs",max_length=1,default='b',choices=SEROLOJI_CHOICES)
+    AntiHBcIgG = models.CharField(verbose_name="AntiHBcIgG",max_length=1,default='b',choices=SEROLOJI_CHOICES)
+    AntiHBcIgM = models.CharField(verbose_name="AntiHBcIgM",max_length=1,default='b',choices=SEROLOJI_CHOICES)
+    AntiHCV = models.CharField(verbose_name="AntiHCV",max_length=1,default='b',choices=SEROLOJI_CHOICES)
+    AntiHIV = models.CharField(verbose_name="AntiHIV",max_length=1,default='b',choices=SEROLOJI_CHOICES)
 
     MRSA_CHOICES = (('v','Var'),('y','Yok'),('b','Bilinmiyor'))
     YES_NO_CHOICES = (('e','Evet'),('h','Hayır'),)
@@ -80,7 +83,8 @@ class KateterOlayi(models.Model):
     TIP_CHOICES = (
         ('gecici_k','Geçici kateter'),
         ('kalici_k','Kalıcı kateter'),
-        ('fistul','Fistül'),
+        ('fistul','AV Fistül'),
+        ('greft','AV Greft'),
     )
     MERKEZ_CHOICES = (
         ('d','Devlet Hastanesi'),

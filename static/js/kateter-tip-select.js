@@ -1,5 +1,5 @@
 function select_update(select){
-    if(select.val()=='fistul'){
+    if(select.val()=='fistul' || select.val()=='greft'){
         select.closest('fieldset').find('.fistul-hide').hide();
     }else{
         select.closest('fieldset').find('.fistul-hide').show();

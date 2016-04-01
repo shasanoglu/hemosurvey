@@ -11,10 +11,10 @@ from django.shortcuts import get_object_or_404
 def add_hasta(request):
     if request.method == 'GET':
         hastaForm = HastaForm()
-        kateterOlayiForm = KateterOlayiForm(prefix='kof')
+        kateterOlayiForm = KateterOlayiForm(prefix='kof',hidden_neden=True)
     elif request.method == 'POST':
         hastaForm = HastaForm(request.POST)
-        kateterOlayiForm = KateterOlayiForm(request.POST,prefix='kof')
+        kateterOlayiForm = KateterOlayiForm(request.POST,prefix='kof',hidden_neden=True)
         if hastaForm.is_valid() and  kateterOlayiForm.is_valid():
             hasta = hastaForm.save(commit=False)
             hasta.merkez = request.user.profil.merkez

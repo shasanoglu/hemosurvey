@@ -11,6 +11,10 @@ import datetime
 class HastaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(HastaForm, self).__init__(*args, **kwargs)
+        unrequired = ['HBsAg','AntiHBs','AntiHBcIgG','AntiHBcIgM','AntiHCV','AntiHIV']
+        for fieldname in unrequired:
+            if fieldname in self.fields:
+                self.fields[fieldname].required = False
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout=Layout(
@@ -47,8 +51,12 @@ class HastaForm(forms.ModelForm):
             Div(
                 Fieldset(
                     'Hepatit serolojisi',
-                    'HBsAg','AntiHBs','AntiHBcIgG','AntiHBcIgM','AntiHCV','AntiHIV',
-                    HTML('<p>* Pozitif olanları işaretleyiniz</p>'),
+                    InlineRadios('HBsAg'),
+                    InlineRadios('AntiHBs'),
+                    InlineRadios('AntiHBcIgG'),
+                    InlineRadios('AntiHBcIgM'),
+                    InlineRadios('AntiHCV'),
+                    InlineRadios('AntiHIV'),
                     css_class="col-sm-12 col-md-4 col-md-offset-2",
                 ),
                 Fieldset(
@@ -103,21 +111,41 @@ class superDateField(forms.DateInput):
 
 class KateterOlayiForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        hidden_neden = kwargs.pop('hidden_neden',False)
+
         super(KateterOlayiForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.layout = Layout(
-            Fieldset(
-                '',
-                Field('tip',css_class='tip-select'),
-                Field('takilma_tarihi',template="custom-widgets/date-widget.html", css_class="datepicker"),
-                'takildigi_merkez',
-                Div('yeri','degisim_nedeni',css_class="fistul-hide")
-            ),
-            FormActions(
-                StrictButton("Ekle",type='submit')
-            ),
-        )
+
+        if hidden_neden:
+            del self.fields['degisim_nedeni']
+
+        if hidden_neden:
+            self.helper.layout = Layout(
+                Fieldset(
+                    '',
+                    Field('tip',css_class='tip-select'),
+                    Field('takilma_tarihi',template="custom-widgets/date-widget.html", css_class="datepicker"),
+                    'takildigi_merkez',
+                    Div('yeri',css_class="fistul-hide")
+                ),
+                FormActions(
+                    StrictButton("Ekle",type='submit')
+                ),
+            )
+        else:
+            self.helper.layout = Layout(
+                Fieldset(
+                    '',
+                    Field('tip',css_class='tip-select'),
+                    Field('takilma_tarihi',template="custom-widgets/date-widget.html", css_class="datepicker"),
+                    'takildigi_merkez',
+                    Div('yeri','degisim_nedeni',css_class="fistul-hide")
+                ),
+                FormActions(
+                    StrictButton("Ekle",type='submit')
+                ),
+            )
 
     takilma_tarihi = forms.DateField(input_formats=['%d/%m/%Y','%d.%m.%Y'],initial=datetime.date.today(),widget=superDateField(format='%d/%m/%Y'))
 
@@ -125,7 +153,7 @@ class KateterOlayiForm(forms.ModelForm):
         fields = [
             'tip','takilma_tarihi',
             'takildigi_merkez',
-            'yeri','degisim_nedeni'
+            'yeri','degisim_nedeni',
         ]
         model = KateterOlayi
 
