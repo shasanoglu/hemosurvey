@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profil,Merkez
+from .models import Profil,Merkez, AylikVeri
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 
@@ -16,4 +16,13 @@ admin.site.unregister(User)
 # register new user admin
 admin.site.register(User, CustomUserAdmin)
 
-admin.site.register(Merkez)
+class AylikVeriInline(admin.StackedInline):
+    model = AylikVeri
+    can_delete = False
+
+class CustomMerkezAdmin(admin.ModelAdmin):
+    inlines = [AylikVeriInline,]
+
+
+admin.site.register(Merkez,CustomMerkezAdmin)
+admin.site.register(AylikVeri)

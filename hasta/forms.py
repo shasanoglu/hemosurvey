@@ -219,6 +219,9 @@ class OlayForm(forms.ModelForm):
         iv_antibiyotik = cleaned_data.get("iv_antibiyotik")
         kan_kulturunde_ureme = cleaned_data.get("kan_kulturunde_ureme")
 
+        if not olay_tarihi:
+            return
+
         timedelta = datetime.timedelta(days=21)
         before_olay = olay_tarihi - timedelta
         after_olay = olay_tarihi + timedelta

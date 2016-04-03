@@ -7,6 +7,12 @@
 {% endblock %}
 
 {% block content %}
+    {% if olay_form.errors %}
+        <div class="alert alert-danger" role="alert">
+            <strong>Kaydedilemedi.</strong> Lütfen hataları düzeltin.
+        </div>
+    {% endif %}
+
     <div class="page-header">
         <h1>
             Diyaliz Olayı Ekranı

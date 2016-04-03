@@ -7,9 +7,15 @@
 {% endblock %}
 
 {% block content %}
-    <div class="alert alert-info" role="alert">
-        Burada girdiğiniz bilgileri (kateter/fistül hariç) sonradan değiştirebilirsiniz.
-    </div>
+    {% if hastaForm.errors or kateterOlayiForm.errors %}
+        <div class="alert alert-danger" role="alert">
+            <strong>Kaydedilemedi.</strong> Lütfen hataları düzeltin.
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Burada girdiğiniz bilgileri (kateter/fistül hariç) sonradan değiştirebilirsiniz.
+        </div>
+    {% endif %}
 
     <div class="row">
         <div class="col-md-12">
@@ -19,6 +25,9 @@
             </div>
             <div class="row">
                 <h3>Kateter / Fistül bilgileri</h3>
+                <div class="well">
+                    <p>Tarih hatırlamayan hastalar için yılı belirleyip 1 Ocak seçebilirsiniz.</p>
+                </div>
                 {% crispy kateterOlayiForm %}
             </div>
         </form>

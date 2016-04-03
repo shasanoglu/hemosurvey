@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from home.views import home,ContactView
+from home.views import home,ContactView, aylik_veri
 from django.contrib.auth.views import login,logout,password_change,password_change_done
 
 #Admin sayfasi basliklari:
@@ -29,5 +29,6 @@ urlpatterns = [
     url(r'^changepassword$',password_change,{'post_change_redirect':'passwordChanged'},name="changePassword"),
     url(r'^passwordchanged$',password_change_done,name="passwordChanged"),
     url(r'^hasta/',include('hasta.urls')),
-    url(r'^iletisim/', ContactView.as_view(), name='contact')
+    url(r'^iletisim/', ContactView.as_view(), name='contact'),
+    url(r'^aylikveri/',aylik_veri,name='aylik_veri'),
 ]
