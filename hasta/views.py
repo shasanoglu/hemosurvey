@@ -5,7 +5,7 @@ from antibiyogram.models import Mikroorganizma
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
-
+from django.contrib import messages
 
 @login_required
 def add_hasta(request):
@@ -22,16 +22,23 @@ def add_hasta(request):
             kateterOlayi = kateterOlayiForm.save(commit=False)
             kateterOlayi.hasta = hasta
             kateterOlayi.save()
-            return redirect('hasta_list')
+            messages.info(request,'Hasta oluşturuldu')
+            return redirect('view_hasta',pk = hasta.id)
 
     context = {'hastaForm':hastaForm,'kateterOlayiForm':kateterOlayiForm}
     return render(request,'hasta/add_hasta.html', context)
+
+def has_permission(user,hasta):
+    if not (user.is_superuser or user.is_staff):
+        if not hasta.merkez == user.profil.merkez:
+            return False
+    return True
 
 @login_required
 def view_hasta(request,**kwargs):
     hasta = Hasta.objects.get(**kwargs)
 
-    if not hasta.merkez == request.user.profil.merkez:
+    if not has_permission(request.user,hasta):
         return HttpResponseForbidden
 
     template_name = "hasta/view_hasta.html"
@@ -45,6 +52,7 @@ def view_hasta(request,**kwargs):
                     kateterOlayi = kateterOlayiForm.save(commit=False)
                     kateterOlayi.hasta = hasta
                     kateterOlayi.save()
+                    messages.info(request,'{} eklendi'.format(kateterOlayi.verbose_tip()))
                     return redirect('view_hasta',pk = hasta.id)
 
     return render(request,template_name,{
@@ -56,7 +64,7 @@ def view_hasta(request,**kwargs):
 def edit_hasta(request,pk):
     hasta = get_object_or_404(Hasta,pk=pk)
 
-    if not hasta.merkez == request.user.profil.merkez:
+    if not has_permission(request.user,hasta):
         return HttpResponseForbidden
 
     if request.method == 'GET':
@@ -65,6 +73,7 @@ def edit_hasta(request,pk):
         form = UpdateHastaForm(request.POST,instance=hasta)
         if form.is_valid():
             form.save()
+            messages.info(request,'Hasta bilgileri güncellendi')
             return redirect('view_hasta',pk=hasta.id)
 
     return render(request,"hasta/edit_hasta.html",{'form':form,})
@@ -76,11 +85,17 @@ def hasta_list(request):
     return render(request,'hasta/hasta_list.html', context)
 
 @login_required
+def hasta_list_all(request):
+    hastalar = Hasta.objects.all()
+    context = {'hastalar':hastalar,'merkez_column':True}
+    return render(request,'hasta/hasta_list.html', context)
+
+@login_required
 def create_olay(request,kateter_id):
     kateter = get_object_or_404(KateterOlayi,id=kateter_id)
     hasta = kateter.hasta
 
-    if not hasta.merkez == request.user.profil.merkez:
+    if not has_permission(request.user,hasta):
         return HttpResponseForbidden
 
     if request.method == 'GET':
@@ -92,6 +107,7 @@ def create_olay(request,kateter_id):
             olay.kateter = kateter
             olay.hasta = hasta
             olay.save()
+            messages.info(request,'Diyaliz ilişkili olay eklendi')
             return redirect('view_olay',olay_id=olay.id)
 
     return render(request,'hasta/create_olay.html',{'form':form,})
@@ -123,7 +139,7 @@ def view_olay(request,olay_id):
     kateter = olay.kateter
     hasta = kateter.hasta
 
-    if not olay.kateter.hasta.merkez == request.user.profil.merkez:
+    if not has_permission(request.user,hasta):
         return HttpResponseForbidden
 
     if request.method == 'GET':
@@ -140,10 +156,12 @@ def view_olay(request,olay_id):
                 for mikrop in mikropsToAdd:
                     if not olay.etken_set.filter(mikroorganizma=mikrop).exists():
                         Etken.objects.create(olay=olay,mikroorganizma=mikrop)
+                        messages.info(request,'Etken eklendi')
             etkenler = get_etkenler()
         elif "delete-etken" in request.POST:
             etken = get_object_or_404(Etken,id=request.POST["delete-etken"])
             etken.delete()
+            messages.info(request,'Etken silindi')
             etkenler = get_etkenler()
         else:
             etkenler = get_etkenler()
@@ -162,6 +180,7 @@ def view_olay(request,olay_id):
                         all_is_well = False
 
             if all_is_well:
+                messages.info(request,'Diyaliz ilişkili olay bilgileri güncellendi')
                 return redirect('view_olay',olay_id=olay.id)
 
 
@@ -176,23 +195,31 @@ def view_olay(request,olay_id):
     })
 
 
+@login_required
 def delete_hasta(request,hasta_id):
     hasta = get_object_or_404(Hasta,id=hasta_id)
     if request.method == 'POST':
         hasta.delete()
+        messages.info(request,'Hasta silindi')
         return redirect('hasta_list')
 
+
+@login_required
 def delete_kateter(request,kateter_id):
     kateter = get_object_or_404(KateterOlayi,id=kateter_id)
     hasta_id = kateter.hasta.id
     if request.method == 'POST':
+        tip = kateter.verbose_tip()
         kateter.delete()
+        messages.info(request,'{} silindi'.format(tip))
         return redirect('view_hasta',pk=hasta_id)
 
 
+@login_required
 def delete_olay(request,olay_id):
     olay = get_object_or_404(DiyalizOlayi,id=olay_id)
     hasta_id = olay.hasta.id
     if request.method == 'POST':
         olay.delete()
+        messages.info(request,'Diyaliz ilişkili olay silindi')
         return redirect('view_hasta',pk=hasta_id)

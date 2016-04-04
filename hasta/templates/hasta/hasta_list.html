@@ -23,6 +23,10 @@
                 <th>Ad</th>
                 <th>Soyad</th>
                 <th>TC.K. No</th>
+                {% if merkez_column %}
+                    <th>Merkez</th>
+                {% endif %}
+                <th>Olay sayısı</th>
             </tr>
         </thead>
         <tbody>
@@ -31,6 +35,10 @@
                     <td><a href="{% url "view_hasta" pk=hasta.pk %}"> {{ hasta.ad }} </a></td>
                     <td><a href="{% url "view_hasta" pk=hasta.pk %}"> {{ hasta.soyad }} </a></td>
                     <td>{{ hasta.tckn }}</td>
+                    {% if merkez_column %}
+                        <td>{{ hasta.merkez }}</td>
+                    {% endif %}
+                    <td>{{ hasta.diyalizolayi_set.count }}</td>
                 </tr>
             {% endfor %}
         </tbody>

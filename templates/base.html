@@ -29,6 +29,11 @@
     <![endif]-->
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+      {% if messages %}
+          <script src="{% static 'js/hies.js' %}"></script>
+      {% endif %}
+
       {% block head %}
 
       {% endblock %}
@@ -64,6 +69,9 @@
                         <li><a href="{% static 'formlar/kateter-baglama.pdf' %}">Kateteri diyaliz makinasına bağlama formu</a></li>
                     </ul>
                   </li>
+                  {% if user.is_staff or user.is_superuser %}
+                    <li><a href="{% url 'hasta_list_all' %}">Tüm hastalar</a></li>
+                  {% endif %}
               {% endif %}
               <li><a href="{% url 'contact' %}">İletişim</a></li>
           </ul>
@@ -95,6 +103,30 @@
     {% block modals %}
 
     {% endblock %}
+
+    {% if messages %}
+        <!-- message modal -->
+        <div id="messageModal" class="modal fade" tabindex="-1" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Bilgi!</h4>
+              </div>
+              <div class="modal-body">
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    {% endif %}
 
 
     <!-- Bootstrap core JavaScript

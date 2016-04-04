@@ -1,9 +1,10 @@
 from django.conf.urls import url
 from .views import add_hasta,hasta_list, view_hasta, edit_hasta, \
-    create_olay, view_olay, delete_olay, delete_hasta, delete_kateter
+    create_olay, view_olay, delete_olay, delete_hasta, delete_kateter, hasta_list_all
 
 urlpatterns = [
     url(r'^$',hasta_list,name="hasta_list"),
+    url(r'^all$',hasta_list_all,name="hasta_list_all"),
     url(r'^add$',add_hasta,name="add_hasta"),
     url(r'^(?P<pk>[0-9]+)$',view_hasta,name="view_hasta"),
     url(r'^(?P<pk>[0-9]+)/edit$',edit_hasta,name="edit_hasta"),

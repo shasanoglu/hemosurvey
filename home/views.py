@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
 from.forms import AylikVeriForm, AylikVeriHelper
 from.models import AylikVeri
-from crispy_forms.helper import FormHelper
+from django.contrib import messages
 
 def home(request):
     auth_form = AuthenticationForm()
@@ -33,6 +33,7 @@ def aylik_veri(request):
             for instance in instances:
                 instance.isUpdated = True
                 instance.save()
+            messages.info(request,'Aylık verileriniz kaydedildi. Aylık veri menüsünden güncelleyebilirsiniz')
             return redirect('home')
 
     else:
