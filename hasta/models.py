@@ -37,6 +37,8 @@ class Hasta(models.Model):
     polikistik_bobrek = models.BooleanField(verbose_name="Polikistik böbrek",default=False)
     dogustan_tek_bobrek = models.BooleanField(verbose_name="Doğuştan tek böbrek",default=False)
     ailesel_bobrek_hastaliklari = models.BooleanField(verbose_name="Ailesel böbrek hastalıkları",default=False)
+    nefrolitiazis =  models.BooleanField(verbose_name="Nefrolitiazis",default=False)
+    idiopatik =  models.BooleanField(verbose_name="İdiopatik",default=False)
     ayh_diger = models.BooleanField(verbose_name="Diğer",default=False)
 
     #Komorbid hastalık

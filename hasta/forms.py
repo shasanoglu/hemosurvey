@@ -33,7 +33,7 @@ class HastaForm(forms.ModelForm):
             Div(
                 Fieldset(
                     'Diyaliz için altta yatan hastalık',
-                    'ayh_HT','ayh_DM','polikistik_bobrek','dogustan_tek_bobrek','ailesel_bobrek_hastaliklari','ayh_diger',
+                    'ayh_HT','ayh_DM','polikistik_bobrek','dogustan_tek_bobrek','ailesel_bobrek_hastaliklari','nefrolitiazis','idiopatik','ayh_diger',
                     css_class="col-sm-12 col-md-4",
                 ),
                 Fieldset(
@@ -76,7 +76,7 @@ class HastaForm(forms.ModelForm):
         fields = [
             'tckn','ad','soyad','dogum_yili','cinsiyet',
             'boy','kilo','diyaliz_ilk_yil','calisma_durumu','yasadigi_il',
-            'ayh_HT','ayh_DM','polikistik_bobrek','dogustan_tek_bobrek','ailesel_bobrek_hastaliklari','ayh_diger',
+            'ayh_HT','ayh_DM','polikistik_bobrek','dogustan_tek_bobrek','ailesel_bobrek_hastaliklari','nefrolitiazis','idiopatik','ayh_diger',
             'kh_HT','kh_DM','gecirilmis_SVO','koroner_arter_hastaligi','astim_koah','kh_diger',
             'alkol','sigara','uyusturucu_madde',
             'HBsAg','AntiHBs','AntiHBcIgG','AntiHBcIgM','AntiHCV','AntiHIV',
