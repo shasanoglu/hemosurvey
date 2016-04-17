@@ -70,7 +70,6 @@ class HastaForm(forms.ModelForm):
                 css_class='row'
             )
         )
-    tckn = TRIdentificationNumberField()
 
     class Meta:
         fields = [

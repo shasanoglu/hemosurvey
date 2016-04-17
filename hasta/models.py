@@ -12,7 +12,7 @@ class Hasta(models.Model):
     merkez = models.ForeignKey(Merkez)
     created_at = models.DateField(auto_now_add=True,editable=False,verbose_name="oluşturulma tarihi")
     modified_at = models.DateField(auto_now=True,editable=False,verbose_name="değiştirilme tarihi")
-    tckn = models.BigIntegerField(unique=True,verbose_name="TC Kimlik No")
+    tckn = models.BigIntegerField(unique=False,verbose_name="Dosya No")
     ad = models.CharField(max_length=25)
     soyad = models.CharField(max_length=25)
 
