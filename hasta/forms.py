@@ -78,9 +78,12 @@ class HastaForm(forms.ModelForm):
         if self.instance:
             other_patients_of_merkez = other_patients_of_merkez.exclude(id=self.instance.id)
 
-        if other_patients_of_merkez.filter(tckn = cleaned_data['tckn']).exists():
-            other_patient = other_patients_of_merkez.filter(tckn = cleaned_data['tckn'])[0]
-            self.add_error('tckn','Girdiğiniz no ile kayıtlı bir hasta zaten var: {} {}'.format(other_patient.ad,other_patient.soyad))
+        try:
+            if other_patients_of_merkez.filter(tckn = cleaned_data['tckn']).exists():
+                other_patient = other_patients_of_merkez.filter(tckn = cleaned_data['tckn'])[0]
+                self.add_error('tckn','Girdiğiniz no ile kayıtlı bir hasta zaten var: {} {}'.format(other_patient.ad,other_patient.soyad))
+        except:
+            pass
 
 
 
