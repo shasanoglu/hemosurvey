@@ -10,6 +10,7 @@ import datetime
 
 class HastaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.merkez = kwargs.pop('merkez',None)
         super(HastaForm, self).__init__(*args, **kwargs)
         unrequired = ['HBsAg','AntiHBs','AntiHBcIgG','AntiHBcIgM','AntiHCV','AntiHIV']
         for fieldname in unrequired:
@@ -70,6 +71,18 @@ class HastaForm(forms.ModelForm):
                 css_class='row'
             )
         )
+
+    def clean(self):
+        cleaned_data = super(HastaForm, self).clean()
+        other_patients_of_merkez = self.merkez.hasta_set
+        if self.instance:
+            other_patients_of_merkez = other_patients_of_merkez.exclude(id=self.instance.id)
+
+        if other_patients_of_merkez.filter(tckn = cleaned_data['tckn']).exists():
+            other_patient = other_patients_of_merkez.filter(tckn = cleaned_data['tckn'])[0]
+            self.add_error('tckn','Girdiğiniz no ile kayıtlı bir hasta zaten var: {} {}'.format(other_patient.ad,other_patient.soyad))
+
+
 
     class Meta:
         fields = [

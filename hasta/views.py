@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from .forms import HastaForm,KateterOlayiForm, UpdateHastaForm, OlayForm, AddEtkenForm, DuyarlilikForm
 from .models import Hasta, KateterOlayi, DiyalizOlayi, Etken
 from antibiyogram.models import Mikroorganizma
@@ -13,7 +13,7 @@ def add_hasta(request):
         hastaForm = HastaForm()
         kateterOlayiForm = KateterOlayiForm(prefix='kof',hidden_neden=True)
     elif request.method == 'POST':
-        hastaForm = HastaForm(request.POST)
+        hastaForm = HastaForm(request.POST, merkez=request.user.profil.merkez)
         kateterOlayiForm = KateterOlayiForm(request.POST,prefix='kof',hidden_neden=True)
         if hastaForm.is_valid() and  kateterOlayiForm.is_valid():
             hasta = hastaForm.save(commit=False)
@@ -70,7 +70,7 @@ def edit_hasta(request,pk):
     if request.method == 'GET':
         form = UpdateHastaForm (instance=hasta)
     elif request.method == 'POST':
-        form = UpdateHastaForm(request.POST,instance=hasta)
+        form = UpdateHastaForm(request.POST,instance=hasta, merkez=request.user.profil.merkez)
         if form.is_valid():
             form.save()
             messages.info(request,'Hasta bilgileri güncellendi')
