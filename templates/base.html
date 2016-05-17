@@ -56,6 +56,7 @@
           <ul class="nav navbar-nav">
               {% if user.is_authenticated %}
                   <li><a href="{% url 'hasta_list' %}">Hasta listesi</a></li>
+                  <li><a href="{% url 'gozlem_list' %}">Gözlemler</a></li>
                   <li><a href="{% url 'aylik_veri' %}">Aylık veri</a></li>
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Formlar<span class="caret"></span></a>

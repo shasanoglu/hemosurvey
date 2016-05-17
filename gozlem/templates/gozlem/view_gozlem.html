@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static "bootstrap-horizon.css" %}">
+    {{ gozlem_form.media }}
+
+{% endblock %}
+
+{% block content %}
+
+    {% if form_errors %}
+        <div class="alert alert-danger" role="alert">
+            <strong>Kaydedilemedi.</strong> Lütfen hataları düzeltin.
+        </div>
+    {% endif %}
+    <form method="post">
+
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Gözlem zamanı & süresi</h3>
+                  </div>
+                  <div class="panel-body">
+                    {% crispy gozlem_form %}
+                    <button type="submit" class="btn btn-default">Kaydet</button>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            {% for gozlem_adimi_type in gozlem_adimi_types %}
+                <div class="panel panel-info">
+                    <div class="panel-heading" role="tab" id="heading{{ gozlem_adimi_type.name }}">
+                      <h4 class="panel-title">
+                        <a {% if collapse != gozlem_adimi_type.name %}class="collapsed"{% endif %} role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ gozlem_adimi_type.name }}" aria-expanded="{% if collapse == gozlem_adimi_type.name %}true{% else %}false{% endif %}" aria-controls="collapse{{ gozlem_adimi_type.name }}">
+                          {{ gozlem_adimi_type.title }} Gözlemleri
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="collapse{{ gozlem_adimi_type.name }}" class="panel-collapse collapse {% if collapse == gozlem_adimi_type.name %}in{% endif %}" role="tabpanel" aria-labelledby="heading{{ gozlem_adimi_type.name }}">
+                        <div class="panel-body">
+                            {% if gozlem_adimi_type.adimlar.objects %}
+                            <div class="row row-horizon">
+                            <div class="col-sm-12">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        {% for field_label in gozlem_adimi_type.adimlar.labels %}
+                                            <th>{{ field_label }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for adim in gozlem_adimi_type.adimlar.objects %}
+                                        <tr>
+                                            <td>
+                                                <button type="submit" name="delete_adim" value="{{ gozlem_adimi_type.name }}|{{ adim.id }}" title="Sil" class="btn btn-default btn-sm" aria-label="Delete">
+                                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                                </button>
+                                            </td>
+                                            {% for field_val in adim.get_ordered_val_list %}
+                                                <td>
+                                                    {% if field_val == 'e' %}
+                                                        <span class="glyphicon glyphicon-ok" aria-hidden="true" title="Evet"></span>
+                                                    {% elif field_val == 'h' %}
+                                                        <span class="glyphicon glyphicon-remove" aria-hidden="true" title="Hayır"></span>
+                                                    {% elif field_val == 'b' %}
+
+                                                    {% else %}
+                                                        {{ field_val }}
+                                                    {% endif %}
+                                                </td>
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            </div>
+                            </div>
+                            <br>
+
+                            {% else %}
+                                <div class="alert alert-warning" role="alert">
+                                    Henüz bir {{ gozlem_adimi_type.title }} gözlemi girilmemiş.
+                                    Aşağıdaki formu kullanarak ekleyebilirsiniz.
+                                </div>
+                            {% endif %}
+
+                            <div class="panel panel-default">
+                              <div class="panel-heading">Yeni gözlem ekle</div>
+                              <div class="panel-body">
+                                  <div class="col-sm-12">
+                                    <div class="row">
+                                        {% crispy gozlem_adimi_type.form %}
+                                    </div>
+                                    <div class="row">
+                                        <button type="submit" name="gozlem_adimi_type" value="{{ gozlem_adimi_type.name }}" class="btn btn-default">Kaydet</button>
+                                    </div>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+        </div>
+
+    </form>
+
+{% endblock %}

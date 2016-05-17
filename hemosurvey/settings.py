@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'home',
     'hasta',
     'antibiyogram',
+    'gozlem',
 )
 
 MIDDLEWARE_CLASSES = (

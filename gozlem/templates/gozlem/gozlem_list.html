@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    {% include 'custom-assets/data-table.html' %}
+
+    <script type="text/javascript">
+        $( document ).ready(function() {
+            $('#gozlemler').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.10/i18n/Turkish.json'
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h2>{% if merkez_column %}Tüm Gözlemler{% else %}Gözlemleriniz{% endif %}</h2>
+
+    <table id="gozlemler" class="table table-striped table-bordered" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Tarih</th>
+                <th>Saat</th>
+                <th>Süre</th>
+                {% if merkez_column %}
+                    <th>Merkez</th>
+                {% endif %}
+                <th>Gözlem sayısı</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for gozlem in gozlemler %}
+                <tr>
+                    <td>
+                        <button type="button" title="Sil" class="btn btn-default btn-sm" aria-label="Delete" data-toggle="modal" data-target="#delete-gozlem-modal-{{ gozlem.id }}">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </button>
+                        <a href="{% url "view_gozlem" id=gozlem.id %}" style="padding-left: 10px;">
+                            {{ gozlem.gozlem_tarihi }}
+                        </a>
+                    </td>
+                    <td>{{ gozlem.gozlem_saati }}</td>
+                    <td>{{ gozlem.gozlem_suresi }}</td>
+                    {% if merkez_column %}
+                        <td>{{ gozlem.merkez }}</td>
+                    {% endif %}
+                    <td>{{ gozlem.gozlem_adimi_count }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <form method="get" action="{% url 'create_gozlem' %}">
+        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Yeni gözlem ekle</button>
+    </form>
+{% endblock %}
+
+{% block modals %}
+    <!-- Gözlem silme modalları -->
+    {% for gozlem in gozlemler %}
+        <div class="modal fade" id="delete-gozlem-modal-{{ gozlem.id }}" tabindex="-1" role="dialog" aria-labelledby="delete-gozlem-modal-{{ gozlem.id }}">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Gözlemi sil!</h4>
+              </div>
+              <div class="modal-body">
+                  <p>Bu gözlemi sildiğinizde bu gözlem kapsamında girilmiş tüm gözlem adımları da silinecek.</p>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Vazgeçtim</button>
+                  <form action="{% url 'delete_gozlem' gozlem.id %}" method="post" class="form" style="display: inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger">Sil</button>
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+    {% endfor %}
+{% endblock %}

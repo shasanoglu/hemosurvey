@@ -31,4 +31,5 @@ urlpatterns = [
     url(r'^hasta/',include('hasta.urls')),
     url(r'^iletisim/', ContactView.as_view(), name='contact'),
     url(r'^aylikveri/',aylik_veri,name='aylik_veri'),
+    url(r'^gozlem/',include('gozlem.urls')),
 ]
