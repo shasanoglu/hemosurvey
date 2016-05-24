@@ -195,6 +195,10 @@ class OlayForm(forms.ModelForm):
                         'isi_hiperemi_puy','iv_antibiyotik',
                         Field('kan_kulturunde_ureme',css_class='kultur-select'),
                     ),
+                    Fieldset(
+                        'Hasta tipi',
+                        'gecici_hasta'
+                    ),
                     css_class='col-sm-12 col-md-6'
                 ),
                 Div(
@@ -285,6 +289,7 @@ class OlayForm(forms.ModelForm):
         fields = [
             'olay_tarihi',
             'isi_hiperemi_puy','iv_antibiyotik','kan_kulturunde_ureme',
+            'gecici_hasta',
             'kateterde_ureme','periferde_ureme','etken_alindi_mi','olasi_kaynak',
             'ates','hipotansiyon','acik_yara','selulit','uriner_enfeksiyon','pnomoni_sye','diger',
             'kateter_cikarildi','hospitalizasyon','olum',

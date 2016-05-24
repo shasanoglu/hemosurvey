@@ -154,6 +154,8 @@ class DiyalizOlayi(models.Model):
     iv_antibiyotik = models.BooleanField(verbose_name="IV ANTİBİYOTİK TEDAVİSİ",default=False)
     kan_kulturunde_ureme = models.BooleanField(verbose_name="KAN KÜLTÜRÜNDE ÜREME",default=False)
 
+    gecici_hasta = models.BooleanField(verbose_name="Geçici Hasta",default=False, help_text="Ünitenizin devamlı hastası değilse işaretleyiniz")
+
     OLASI_KAYNAK_CHOICES = (
         ('v', 'Vasküler giriş'),
         ('vh', 'Vasküler giriş harici'),
