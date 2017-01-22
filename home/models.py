@@ -27,7 +27,7 @@ class Merkez(models.Model):
             while not (max_month == cur_month and max_year == cur_year):
                 #calc next month
                 if max_month == 12:
-                    max_month == 1
+                    max_month = 1
                     max_year = max_year + 1
                 else:
                     max_month = max_month + 1
