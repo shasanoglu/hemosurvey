@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>İstatistikler</h2>
+
+    <ul>
+        {% for k,v in stat_types.items %}
+            <li><a href="{% url 'stat' %}?type={{ k }}">{{ v.description }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <dl>
+        <dt>Toplam hasta sayısı</dt>
+        <dd>{{ stats.toplam_hasta }}</dd>
+
+        <dt>Kadın hasta sayısı</dt>
+        <dd>{{ stats.kadin_hasta }}</dd>
+
+        <dt>Erkek hasta sayısı</dt>
+        <dd>{{ stats.erkek_hasta }}</dd>
+
+        <dt>Yaş</dt>
+        <dd>{{ stats.age }}</dd>
+
+        <dt>Diyaliz yıl</dt>
+        <dd>{{ stats.diyaliz_year }}</dd>
+    </dl>
+{% endblock %}

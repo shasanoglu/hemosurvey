@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table id="hastalar" class="table table-striped table-bordered" cellspacing="0">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>HT</th>
+                <th>DM</th>
+                <th>gecirilmis_SVO</th>
+                <th>koroner_arter_hastaligi</th>
+                <th>astim_koah</th>
+                <th>kh_diger</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hasta in hastalar %}
+                <tr>
+                    <td>{{ hasta.id }}</td>
+                    <td>{% if hasta.kh_HT %}1{% else %}0{% endif %}</td>
+                    <td>{% if hasta.kh_DM %}1{% else %}0{% endif %}</td>
+                    <td>{% if hasta.gecirilmis_SVO %}1{% else %}0{% endif %}</td>
+                    <td>{% if hasta.koroner_arter_hastaligi %}1{% else %}0{% endif %}</td>
+                    <td>{% if hasta.astim_koah %}1{% else %}0{% endif %}</td>
+                    <td>{% if hasta.kh_diger %}1{% else %}0{% endif %}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

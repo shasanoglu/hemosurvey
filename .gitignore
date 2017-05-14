@@ -56,3 +56,6 @@ db.sqlite3
 hemosurvey/secret_settings.py
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/inspectionProfiles/Project_Default.xml
+db.json
+db01.json
+db_oldlocL.sqlite3

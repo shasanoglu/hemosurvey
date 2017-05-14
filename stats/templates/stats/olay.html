@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table id="hastalar" class="table table-striped table-bordered" cellspacing="0">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>isi_hiperemi_puy</th>
+                <th>iv_antibiyotik</th>
+                <th>kan_kulturunde_ureme</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for olay in olaylar %}
+                <tr>
+                    <td>{{ olay.id }}</td>
+                    <td>{% if olay.isi_hiperemi_puy %}1{% else %}0{% endif %}</td>
+                    <td>{% if olay.iv_antibiyotik %}1{% else %}0{% endif %}</td>
+                    <td>{% if olay.kan_kulturunde_ureme %}1{% else %}0{% endif %}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

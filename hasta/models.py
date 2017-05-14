@@ -70,9 +70,9 @@ class Hasta(models.Model):
 
     #Diğer
     MRSA_kolonizayonu = models.CharField(verbose_name="MRSA kolonizasyonu",max_length=1,choices=MRSA_CHOICES,default='y')
-    influenza_asisi = models.CharField(verbose_name="İnfluenza aşısı olmuş mu?",max_length=1,choices=YES_NO_CHOICES,default='n')
-    pnomokok_asisi = models.CharField(verbose_name="Pnömokok aşısı olmuş mu?",max_length=1,choices=YES_NO_CHOICES,default='n')
-    egitim = models.CharField(verbose_name="Hasta kateter/fistül bakımı için eğitim almış mı?",max_length=1,choices=YES_NO_CHOICES,default='n')
+    influenza_asisi = models.CharField(verbose_name="İnfluenza aşısı olmuş mu?",max_length=1,choices=YES_NO_CHOICES,default='h')
+    pnomokok_asisi = models.CharField(verbose_name="Pnömokok aşısı olmuş mu?",max_length=1,choices=YES_NO_CHOICES,default='h')
+    egitim = models.CharField(verbose_name="Hasta kateter/fistül bakımı için eğitim almış mı?",max_length=1,choices=YES_NO_CHOICES,default='h')
 
     class Meta:
         verbose_name_plural = "hastalar"

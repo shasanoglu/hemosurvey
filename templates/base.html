@@ -72,6 +72,7 @@
                   </li>
                   {% if user.is_staff or user.is_superuser %}
                     <li><a href="{% url 'hasta_list_all' %}">Tüm hastalar</a></li>
+                    <li><a href="{% url 'stat' %}">İstatistik</a></li>
                   {% endif %}
               {% endif %}
               <li><a href="{% url 'contact' %}">İletişim</a></li>

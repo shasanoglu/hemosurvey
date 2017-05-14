@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table id="hastalar" class="table table-striped table-bordered" cellspacing="0">
+        <thead>
+            <tr>
+                <th>merkez</th>
+                <th>yil</th>
+                <th>ay</th>
+                <th>sayi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aylik_veri in aylik_veriler %}
+                <tr>
+                    <td>{{ aylik_veri.merkez_id }}</td>
+                    <td>{{ aylik_veri.yil }}</td>
+                    <td>{{ aylik_veri.ay }}</td>
+                    <td>{{ aylik_veri.ilk_iki_gun }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

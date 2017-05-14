@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table id="hastalar" class="table table-striped table-bordered" cellspacing="0">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>HBsAg</th>
+                <th>AntiHBs</th>
+                <th>AntiHCV</th>
+                <th>AntiHIV</th>
+                <th>MRSA_kolonizayonu</th>
+                <th>influenza_asisi</th>
+                <th>pnomokok_asisi</th>
+                <th>egitim</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hasta in hastalar %}
+                <tr>
+                    <td>{{ hasta.id }}</td>
+                    <td>{{ hasta.HBsAg }}</td>
+                    <td>{{ hasta.AntiHBs }}</td>
+                    <td>{{ hasta.AntiHCV }}</td>
+                    <td>{{ hasta.AntiHIV }}</td>
+                    <td>{{ hasta.MRSA_kolonizayonu }}</td>
+                    <td>{{ hasta.influenza_asisi }}</td>
+                    <td>{{ hasta.pnomokok_asisi }}</td>
+                    <td>{{ hasta.egitim }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
